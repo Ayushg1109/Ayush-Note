@@ -5,6 +5,7 @@ export const NavbarData = [
   },
   {
     path:"/pastes",
-    title:"Paste",
+    title:"My Notes",
   },
 ]
+//paste ki jagah notes
