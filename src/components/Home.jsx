@@ -1,138 +1,131 @@
-import { Copy, PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import { addToPastes, updatePastes } from "../redux/pasteSlice";
-import { useSearchParams } from "react-router-dom";
+import { Copy, PlusCircle } from "lucide-react";  
+import { useEffect, useState } from "react";  
+import toast from "react-hot-toast";  
+import { useDispatch, useSelector } from "react-redux";  
+import { addToPastes, updatePastes } from "../redux/pasteSlice";  
+import { useSearchParams } from "react-router-dom";  
 
-const Home = () => {
-  const [value, setValue] = useState("");
-  const [title, setTitle] = useState("");
-  const [searchParams, setSearchParams] = useSearchParams(); // Destructure useSearchParams
-  const pasteId = searchParams.get("pasteId"); // Get pasteId from the search params
-  const pastes = useSelector((state) => state.paste.pastes);
-  const dispatch = useDispatch();
+const Home = () => {  
+  const [value, setValue] = useState("");  
+  const [title, setTitle] = useState("");  
+  const [searchParams, setSearchParams] = useSearchParams();  
+  const pasteId = searchParams.get("pasteId");  
+  const pastes = useSelector((state) => state.paste.pastes);  
+  const dispatch = useDispatch();  
 
-  const createPaste = () => {
-    const paste = {
-      title: title,
-      content: value,
-      _id:
-        pasteId ||
-        Date.now().toString(36) + Math.random().toString(36).substring(2),
-      createdAt: new Date().toISOString(),
-    };
+  const createPaste = () => {  
+    const paste = {  
+      title: title,  
+      content: value,  
+      _id: pasteId || Date.now().toString(36) + Math.random().toString(36).substring(2),  
+      createdAt: new Date().toISOString(),  
+    };  
 
-    if (pasteId) {
-      // If pasteId is present, update the paste
-      dispatch(updatePastes(paste));
-    } else {
-      dispatch(addToPastes(paste));
-    }
+    if (pasteId) {  
+      dispatch(updatePastes(paste));  
+    } else {  
+      dispatch(addToPastes(paste));  
+    }  
 
-    setTitle("");
-    setValue("");
+    setTitle("");  
+    setValue("");  
+    setSearchParams({});  
+  };  
 
-    // Remove the pasteId from the URL after creating/updating a paste
-    setSearchParams({});
-  };
+  const resetPaste = () => {  
+    setTitle("");  
+    setValue("");  
+    setSearchParams({});  
+  };  
 
-  const resetPaste = () => {
-    setTitle("");
-    setValue("");
-    setSearchParams({});
-    // navigate("/");
-  };
+  useEffect(() => {  
+    if (pasteId) {  
+      const paste = pastes.find((p) => p._id === pasteId);  
+      if (paste) {  
+        setTitle(paste.title);  
+        setValue(paste.content);  
+      }  
+    }  
+  }, [pasteId, pastes]);  
 
-  useEffect(() => {
-    if (pasteId) {
-      const paste = pastes.find((p) => p._id === pasteId);
-      if (paste) {
-        setTitle(paste.title);
-        setValue(paste.content);
-      }
-    }
-  }, [pasteId, pastes]);
+  return (  
+    <div className="w-full h-screen bg-black flex flex-col items-center justify-center">  
+      <div className="w-full max-w-[1200px] px-5 lg:px-0 flex flex-col gap-y-6">  
+        <div className="w-full flex flex-row items-center">  
+          <input  
+            type="text"  
+            placeholder="Title"  
+            value={title}  
+            onChange={(e) => setTitle(e.target.value)}  
+            className={`${  
+              pasteId ? "w-[70%]" : "w-[80%]"  
+            } text-white bg-gray-900 border border-blue-500 rounded-lg p-4 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out`}  
+          />  
+           <button
+    className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-400 font-medium rounded-lg text-sm px-5 py-3 transition duration-300 ease-in-out shadow-md hover:shadow-lg hover:scale-105 ml-2 flex-grow"
+    onClick={createPaste}
+  >
+    {pasteId ? "Update Note" : "Create Note"}
+  </button>  
 
+          {pasteId && (  
+            <button  
+              className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-400 font-medium rounded-lg text-sm px-5 py-3 transition duration-300 ease-in-out shadow-md ml-2"  
+              onClick={resetPaste}  
+            >  
+              <PlusCircle size={20} />  
+            </button>  
+          )}  
+        </div>  
 
-  return (
-    <div className="w-full h-full py-10 max-w-[1200px] mx-auto px-5 lg:px-0">
-      <div className="flex flex-col gap-y-5 items-start">
-        <div className="w-full flex flex-row gap-x-4 justify-between items-center">
-          <input
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            // Dynamic width based on whether pasteId is present
-            className={`${
-              pasteId ? "w-[80%]" : "w-[85%]"
-            } text-black border border-input rounded-md p-2`}
-          />
-          <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
-            onClick={createPaste}
-          >
-            {pasteId ? "Update Paste" : "Create Note"}
-          </button>
+        <div className="w-full flex flex-col items-start relative bg-gray-900 rounded-lg border border-blue-500 shadow-xl transition duration-300 ease-in-out hover:shadow-2xl">  
+          <div className="w-full flex items-center justify-between p-4 border-b border-blue-500">  
+            <div className="flex gap-x-1 items-center select-none">  
+              <div className="w-2 h-2 rounded-full bg-red-500" />  
+              <div className="w-2 h-2 rounded-full bg-yellow-500" />  
+              <div className="w-2 h-2 rounded-full bg-green-500" />  
+            </div>  
+            <button  
+              className="flex items-center justify-center transition-all duration-300 ease-in-out"  
+              onClick={() => {  
+                navigator.clipboard.writeText(value);  
+                toast.success("Copied to Clipboard", {  
+                  position: "top-right",  
+                });  
+              }}  
+            >  
+              <Copy className="text-gray-300 hover:text-blue-300" size={20} />  
+            </button>  
+          </div>  
 
-        {pasteId &&  <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700"
-            onClick={resetPaste}
-          >
-            <PlusCircle size={20} />
-          </button>}
-        </div>
+          <textarea  
+            value={value}  
+            onChange={(e) => setValue(e.target.value)}  
+            placeholder="Write Your Content Here...."  
+            className="w-full p-4 h-64 bg-gray-900 text-white border-none outline-none resize-none rounded-b-lg"  
+            style={{ caretColor: "#00ffcc" }}  
+            rows={10}  
+          />  
+        </div>  
+      </div>  
 
-        <div
-          className={`w-full flex flex-col items-start relative rounded bg-opacity-10 border border-[rgba(128,121,121,0.3)] backdrop-blur-2xl`}
-        >
-          <div
-            className={`w-full rounded-t flex items-center justify-between gap-x-4 px-4 py-2 border-b border-[rgba(128,121,121,0.3)]`}
-          >
-            <div className="w-full flex gap-x-[6px] items-center select-none group">
-              <div className="w-[13px] h-[13px] rounded-full flex items-center justify-center p-[1px] overflow-hidden bg-[rgb(255,95,87)]" />
+      <style jsx>{`  
+        input:focus {  
+          background: rgba(0, 51, 204, 0.2);  
+          border-color: #00ffcc;  
+        }  
 
-              <div
-                className={`w-[13px] h-[13px] rounded-full flex items-center justify-center p-[1px] overflow-hidden bg-[rgb(254,188,46)]`}
-              />
+        textarea:focus {  
+          background: rgba(0, 51, 204, 0.2);  
+        }  
 
-              <div className="w-[13px] h-[13px] rounded-full flex items-center justify-center p-[1px] overflow-hidden bg-[rgb(45,200,66)]" />
-            </div>
-            {/* Circle and copy btn */}
-            <div
-              className={`w-fit rounded-t flex items-center justify-between gap-x-4 px-4`}
-            >
-              {/*Copy  button */}
-              <button
-                className={`flex justify-center items-center  transition-all duration-300 ease-in-out group`}
-                onClick={() => {
-                  navigator.clipboard.writeText(value);
-                  toast.success("Copied to Clipboard", {
-                    position: "top-right",
-                  });
-                }}
-              >
-                <Copy className="group-hover:text-sucess-500" size={20} />
-              </button>
-            </div>
-          </div>
-
-          {/* TextArea */}
-          <textarea
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="Write Your Content Here...."
-            className="w-full p-3  focus-visible:ring-0"
-            style={{
-              caretColor: "#000",
-            }}
-            rows={20}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
+        /* Glowing effect on hover for buttons */  
+        button:hover {  
+          box-shadow: 0 0 20px rgba(0, 255, 204, 0.5), 0 0 30px rgba(0, 255, 204, 0.6);  
+        }  
+      `}</style>  
+    </div>  
+  );  
+};  
 
 export default Home;
