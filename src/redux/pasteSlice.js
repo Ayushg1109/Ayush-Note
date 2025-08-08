@@ -26,7 +26,7 @@ const pasteSlice = createSlice({
       // Update to localstorage
       localStorage.setItem("pastes", JSON.stringify(state.pastes))
       // show toast
-      toast.success("Paste added")
+      toast.success("Note Created Successfully")
     },
 
     updatePastes: (state, action) => {
