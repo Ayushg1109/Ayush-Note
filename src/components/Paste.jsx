@@ -56,6 +56,7 @@ const Paste = () => {
                   {/* Icons */}
                   <div className="flex flex-col justify-between sm:items-end">
                     <div className="flex gap-2 flex-wrap sm:flex-nowrap">
+                      {/* Edit */}
                       <Link
                         to={`/?pasteId=${paste?._id}`}
                         className="p-2 rounded bg-gray-600 hover:bg-gray-500 transition duration-300"
@@ -63,6 +64,7 @@ const Paste = () => {
                         <PencilLine className="text-blue-400" size={20} />
                       </Link>
 
+                      {/* Delete */}
                       <button
                         className="p-2 rounded bg-gray-600 hover:bg-gray-500 transition duration-300"
                         onClick={() => handleDelete(paste?._id)}
@@ -70,15 +72,15 @@ const Paste = () => {
                         <Trash2 className="text-pink-400" size={20} />
                       </button>
 
+                      {/* View */}
                       <Link
                         to={`/pastes/${paste?._id}`}
-                      
-                        rel="noopener noreferrer"
                         className="p-2 rounded bg-gray-600 hover:bg-gray-500 transition duration-300"
                       >
                         <Eye className="text-orange-400" size={20} />
                       </Link>
 
+                      {/* Copy */}
                       <button
                         className="p-2 rounded bg-gray-600 hover:bg-gray-500 transition duration-300"
                         onClick={() => {
