@@ -72,7 +72,7 @@ const Paste = () => {
 
                       <Link
                         to={`/pastes/${paste?._id}`}
-                        target="_blank"
+                      
                         rel="noopener noreferrer"
                         className="p-2 rounded bg-gray-600 hover:bg-gray-500 transition duration-300"
                       >
